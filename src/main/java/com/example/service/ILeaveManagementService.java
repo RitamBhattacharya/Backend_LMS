@@ -27,4 +27,9 @@ public interface ILeaveManagementService {
     LeaveRequest createLeaveRequest(LeaveRequest leaveRequest);
     LeaveRequest updateLeaveRequest(Integer id, LeaveRequest updatedRequest);
     void deleteLeaveRequest(Integer id);
+    
+    
+    Admin loginAdmin(String email, String password);
+    Employee loginEmployee(String email, String password);
+
 }

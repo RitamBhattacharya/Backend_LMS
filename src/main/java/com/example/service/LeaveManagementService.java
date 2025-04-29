@@ -101,10 +101,13 @@ public class LeaveManagementService implements ILeaveManagementService{
         return leaveRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Leave Request not found"));
     }
 	
+
 	@Override
 	public LeaveRequest createLeaveRequest(LeaveRequest leaveRequest) {
         return leaveRequestRepository.save(leaveRequest);
     }
+
+
 
 	@Override
 	public LeaveRequest updateLeaveRequest(Integer id, LeaveRequest updatedRequest) {
@@ -118,4 +121,20 @@ public class LeaveManagementService implements ILeaveManagementService{
     public void deleteLeaveRequest(Integer id) {
         leaveRequestRepository.deleteById(id);
     }
+	
+	
+	
+	
+	@Override
+	public Admin loginAdmin(String email, String password) {
+	    return adminRepository.findByEmailAndPassword(email, password)
+	            .orElseThrow(() -> new RuntimeException("Invalid admin credentials"));
+	}
+
+	@Override
+	public Employee loginEmployee(String email, String password) {
+	    return employeeRepository.findByEmailAndPassword(email, password)
+	            .orElseThrow(() -> new RuntimeException("Invalid employee credentials"));
+	}
+
 }

@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import com.example.service.LeaveManagementService;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class LeaveManagementController {
 
     @Autowired
@@ -96,8 +99,10 @@ public class LeaveManagementController {
     @PostMapping("/leave-requests")
     public ResponseEntity<LeaveRequest> createLeaveRequest(@RequestBody LeaveRequest leaveRequest) {
         LeaveRequest createdLeaveRequest = leaveManagementService.createLeaveRequest(leaveRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLeaveRequest); // 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdLeaveRequest);
     }
+  
+
 
     @PutMapping("/leave-requests/{id}")
     public ResponseEntity<LeaveRequest> updateLeaveRequest(@PathVariable Integer id, @RequestBody LeaveRequest leaveRequest) {
@@ -110,4 +115,32 @@ public class LeaveManagementController {
         leaveManagementService.deleteLeaveRequest(id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
+    
+    
+    
+    @PostMapping("/login/admin")
+    public ResponseEntity<?> adminLogin(@RequestBody Map<String, String> credentials) {
+        try {
+            Admin admin = leaveManagementService.loginAdmin(
+                credentials.get("email"), credentials.get("password")
+            );
+            return ResponseEntity.ok(admin); // Success
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/login/employee")
+    public ResponseEntity<?> employeeLogin(@RequestBody Map<String, String> credentials) {
+        try {
+            Employee employee = leaveManagementService.loginEmployee(
+                credentials.get("email"), credentials.get("password")
+            );
+            return ResponseEntity.ok(employee); // Success
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+
+
 }
