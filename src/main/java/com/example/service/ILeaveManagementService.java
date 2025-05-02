@@ -1,6 +1,7 @@
 package com.example.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.entity.Admin;
 import com.example.entity.Employee;
@@ -31,5 +32,7 @@ public interface ILeaveManagementService {
     
     Admin loginAdmin(String email, String password);
     Employee loginEmployee(String email, String password);
+    
+    Map<String, Long> getDashboardStats();
 
 }

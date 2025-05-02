@@ -142,5 +142,12 @@ public class LeaveManagementController {
         }
     }
 
+    
+    
+    @GetMapping("/dashboard/stats")
+    public ResponseEntity<Map<String, Long>> getDashboardStats() {
+        Map<String, Long> stats = leaveManagementService.getDashboardStats();
+        return ResponseEntity.ok(stats);
+    }
 
 }

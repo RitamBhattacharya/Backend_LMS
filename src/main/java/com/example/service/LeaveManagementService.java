@@ -1,7 +1,9 @@
 // Service Layer
 package com.example.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +137,24 @@ public class LeaveManagementService implements ILeaveManagementService{
 	public Employee loginEmployee(String email, String password) {
 	    return employeeRepository.findByEmailAndPassword(email, password)
 	            .orElseThrow(() -> new RuntimeException("Invalid employee credentials"));
+	}
+	
+	
+	
+	@Override
+	public Map<String, Long> getDashboardStats() {
+	    long employeeCount = employeeRepository.count();
+	    long pendingCount = leaveRequestRepository.countByStatusIgnoreCase("Pending");
+	    long approvedCount = leaveRequestRepository.countByStatusIgnoreCase("Approved");
+	    long declinedCount = leaveRequestRepository.countByStatusIgnoreCase("Rejected");
+
+	    Map<String, Long> stats = new HashMap<>();
+	    stats.put("employees", employeeCount);
+	    stats.put("pending", pendingCount);
+	    stats.put("approved", approvedCount);
+	    stats.put("declined", declinedCount);
+
+	    return stats;
 	}
 
 }
