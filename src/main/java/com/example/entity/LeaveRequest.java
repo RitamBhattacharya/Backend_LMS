@@ -3,6 +3,7 @@ package com.example.entity;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +26,7 @@ public class LeaveRequest {
 
     @ManyToOne
     @JoinColumn(name = "employeeID", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties({"leaveRequests"})
     private Employee employee;
 
     @Column(nullable = false, length = 50)
