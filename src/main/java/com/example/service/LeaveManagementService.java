@@ -156,5 +156,19 @@ public class LeaveManagementService implements ILeaveManagementService{
 
 	    return stats;
 	}
+	
+	
+	@Override
+	public LeaveRequest updateStatus(Integer id, String status) {
+	    LeaveRequest leaveRequest = leaveRequestRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Leave Request not found"));
+
+	    // Update the status
+	    leaveRequest.setStatus(status);
+
+	    // Save the updated leave request
+	    return leaveRequestRepository.save(leaveRequest);
+	}
+
 
 }

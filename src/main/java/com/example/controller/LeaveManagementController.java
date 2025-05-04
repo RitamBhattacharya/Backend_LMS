@@ -149,5 +149,21 @@ public class LeaveManagementController {
         Map<String, Long> stats = leaveManagementService.getDashboardStats();
         return ResponseEntity.ok(stats);
     }
+    
+    
+    
+    
+    @PutMapping("/leave-requests/{id}/approve")
+    public ResponseEntity<LeaveRequest> approveRequest(@PathVariable Integer id) {
+        LeaveRequest updated = leaveManagementService.updateStatus(id, "Approved");
+        return ResponseEntity.ok(updated);
+    }
+
+    @PutMapping("/leave-requests/{id}/reject")
+    public ResponseEntity<LeaveRequest> rejectRequest(@PathVariable Integer id) {
+        LeaveRequest updated = leaveManagementService.updateStatus(id, "Rejected");
+        return ResponseEntity.ok(updated);
+    }
+
 
 }

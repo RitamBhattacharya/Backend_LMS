@@ -34,5 +34,7 @@ public interface ILeaveManagementService {
     Employee loginEmployee(String email, String password);
     
     Map<String, Long> getDashboardStats();
+    
+    LeaveRequest updateStatus(Integer id, String status);
 
 }
