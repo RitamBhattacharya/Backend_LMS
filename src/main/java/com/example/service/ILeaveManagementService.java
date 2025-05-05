@@ -43,7 +43,8 @@ public interface ILeaveManagementService {
     LeaveRequest getApprovedLeaveByRequestId(Integer requestId);
     
     LeaveRequest getRejectedLeaveByRequestId(Integer requestId);
+    
 
-
+    Map<String, Map<String, Integer>> getLeaveSummaryForEmployee(Integer employeeId);
 
 }

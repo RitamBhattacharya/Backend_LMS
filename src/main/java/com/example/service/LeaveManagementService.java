@@ -204,6 +204,60 @@ public class LeaveManagementService implements ILeaveManagementService{
 
 	    return leave;
 	}
+	
+	
+	
+	@Override
+	public Map<String, Map<String, Integer>> getLeaveSummaryForEmployee(Integer employeeId) {
+	    // Updated total leaves
+	    Map<String, Integer> totalLeaves = new HashMap<>();
+	    totalLeaves.put("CL", 15);
+	    totalLeaves.put("SL", 9);
+	    totalLeaves.put("EL", 15); // set EL to 15 instead of 10
+
+	    // Fetch taken leave from DB
+	    List<Object[]> results = leaveRequestRepository.findTakenLeavesGroupedByType(employeeId);
+	    Map<String, Integer> takenLeaves = new HashMap<>();
+	    for (Object[] row : results) {
+	        String type = ((String) row[0]).toUpperCase();
+	        int days = ((Number) row[1]).intValue();
+	        if (type.equals("CASUAL")) type = "CL";
+	        else if (type.equals("SICK")) type = "SL";
+	        else if (type.equals("EMERGENCY")) type = "EL";
+	        takenLeaves.put(type, days);
+	    }
+
+	    // Set 0 if a type is missing
+	    for (String type : totalLeaves.keySet()) {
+	        takenLeaves.putIfAbsent(type, 0);
+	    }
+
+	    // Calculate remaining
+	    Map<String, Integer> remainingLeaves = new HashMap<>();
+	    for (String type : totalLeaves.keySet()) {
+	        int taken = takenLeaves.get(type);
+	        int total = totalLeaves.get(type);
+	        remainingLeaves.put(type, total - taken);
+	    }
+
+	    Map<String, Map<String, Integer>> result = new HashMap<>();
+	    result.put("Total", totalLeaves);
+	    result.put("Taken", takenLeaves);
+	    result.put("Remaining", remainingLeaves);
+
+	    return result;
+	}
+
+
+	
+//	private String mapToShortForm(String type) {
+//	    return switch (type.toUpperCase()) {
+//	        case "SICK" -> "SL";
+//	        case "CASUAL" -> "CL";
+//	        case "EMERGENCY" -> "EL";
+//	        default -> type.toUpperCase();
+//	    };
+//	}
 
 
 }

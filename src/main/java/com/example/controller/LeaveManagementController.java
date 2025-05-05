@@ -185,5 +185,13 @@ public class LeaveManagementController {
         return ResponseEntity.ok(leave);
     }
 
-     
+    
+    
+    
+    @GetMapping("/employees/{id}/leave-summary")
+    public ResponseEntity<Map<String, Map<String, Integer>>> getLeaveSummary(@PathVariable Integer id) {
+        Map<String, Map<String, Integer>> summary = leaveManagementService.getLeaveSummaryForEmployee(id);
+        return ResponseEntity.ok(summary);
+    }
+
 }
