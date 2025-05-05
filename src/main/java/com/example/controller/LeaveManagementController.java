@@ -118,6 +118,9 @@ public class LeaveManagementController {
     
     
     
+    
+    // login endpoints
+    
     @PostMapping("/login/admin")
     public ResponseEntity<?> adminLogin(@RequestBody Map<String, String> credentials) {
         try {
@@ -144,6 +147,8 @@ public class LeaveManagementController {
 
     
     
+    // dashboard endpoint
+    
     @GetMapping("/dashboard/stats")
     public ResponseEntity<Map<String, Long>> getDashboardStats() {
         Map<String, Long> stats = leaveManagementService.getDashboardStats();
@@ -152,7 +157,7 @@ public class LeaveManagementController {
     
     
     
-    
+    // Approve and Reject endpoint
     
     @PutMapping("/leave-requests/{id}/approve")
     public ResponseEntity<Void> approveLeaveRequest(
@@ -171,6 +176,7 @@ public class LeaveManagementController {
     }
     
     
+    // End point for get Approved Leave Request by Id and get Rejected Leave Request by Id
     
     @GetMapping("/leave-requests/approved/{requestId}")
     public ResponseEntity<LeaveRequest> getApprovedLeaveByRequestId(@PathVariable Integer requestId) {
@@ -187,6 +193,8 @@ public class LeaveManagementController {
 
     
     
+    
+    // Endpoint for get leave summary
     
     @GetMapping("/employees/{id}/leave-summary")
     public ResponseEntity<Map<String, Map<String, Integer>>> getLeaveSummary(@PathVariable Integer id) {
