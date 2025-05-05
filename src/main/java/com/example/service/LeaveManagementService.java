@@ -158,16 +158,51 @@ public class LeaveManagementService implements ILeaveManagementService{
 	}
 	
 	
+
+	
 	@Override
-	public LeaveRequest updateStatus(Integer id, String status) {
-	    LeaveRequest leaveRequest = leaveRequestRepository.findById(id)
-	            .orElseThrow(() -> new RuntimeException("Leave Request not found"));
+	public void approveLeaveRequest(Integer requestId, String remarks) {
+	    LeaveRequest leave = leaveRequestRepository.findById(requestId)
+	        .orElseThrow(() -> new RuntimeException("Leave not found"));
+	    leave.setStatus("Approved");
+	    leave.setAdminComments(remarks);
+	    leaveRequestRepository.save(leave);
+	}
+	
+	@Override
+	public void rejectLeaveRequest(Integer requestId, String remarks) {
+	    LeaveRequest leave = leaveRequestRepository.findById(requestId)
+	        .orElseThrow(() -> new RuntimeException("Leave not found"));
+	    leave.setStatus("Rejected");
+	    leave.setAdminComments(remarks);
+	    leaveRequestRepository.save(leave);
+	}
+	
+	
+	
+	@Override
+	public LeaveRequest getApprovedLeaveByRequestId(Integer requestId) {
+	    LeaveRequest leave = leaveRequestRepository.findById(requestId)
+	        .orElseThrow(() -> new RuntimeException("Leave Request not found"));
 
-	    // Update the status
-	    leaveRequest.setStatus(status);
+	    if (!"Approved".equalsIgnoreCase(leave.getStatus())) {
+	        throw new RuntimeException("Leave Request is not approved");
+	    }
 
-	    // Save the updated leave request
-	    return leaveRequestRepository.save(leaveRequest);
+	    return leave;
+	}
+
+	
+	@Override
+	public LeaveRequest getRejectedLeaveByRequestId(Integer requestId) {
+	    LeaveRequest leave = leaveRequestRepository.findById(requestId)
+	        .orElseThrow(() -> new RuntimeException("Leave Request not found"));
+
+	    if (!"Rejected".equalsIgnoreCase(leave.getStatus())) {
+	        throw new RuntimeException("Leave Request is not rejected");
+	    }
+
+	    return leave;
 	}
 
 

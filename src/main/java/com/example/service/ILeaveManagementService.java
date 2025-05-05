@@ -35,6 +35,15 @@ public interface ILeaveManagementService {
     
     Map<String, Long> getDashboardStats();
     
-    LeaveRequest updateStatus(Integer id, String status);
+
+    
+    void rejectLeaveRequest(Integer requestId, String remarks);
+    void approveLeaveRequest(Integer requestId, String remarks);
+    
+    LeaveRequest getApprovedLeaveByRequestId(Integer requestId);
+    
+    LeaveRequest getRejectedLeaveByRequestId(Integer requestId);
+
+
 
 }

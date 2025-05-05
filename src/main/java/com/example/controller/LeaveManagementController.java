@@ -153,17 +153,37 @@ public class LeaveManagementController {
     
     
     
+    
     @PutMapping("/leave-requests/{id}/approve")
-    public ResponseEntity<LeaveRequest> approveRequest(@PathVariable Integer id) {
-        LeaveRequest updated = leaveManagementService.updateStatus(id, "Approved");
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> approveLeaveRequest(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String remarks) {
+        leaveManagementService.approveLeaveRequest(id, remarks);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/leave-requests/{id}/reject")
-    public ResponseEntity<LeaveRequest> rejectRequest(@PathVariable Integer id) {
-        LeaveRequest updated = leaveManagementService.updateStatus(id, "Rejected");
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Void> rejectLeaveRequest(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String remarks) {
+        leaveManagementService.rejectLeaveRequest(id, remarks);
+        return ResponseEntity.ok().build();
+    }
+    
+    
+    
+    @GetMapping("/leave-requests/approved/{requestId}")
+    public ResponseEntity<LeaveRequest> getApprovedLeaveByRequestId(@PathVariable Integer requestId) {
+        LeaveRequest leave = leaveManagementService.getApprovedLeaveByRequestId(requestId);
+        return ResponseEntity.ok(leave);
+    }
+    
+    
+    @GetMapping("/leave-requests/rejected/{requestId}")
+    public ResponseEntity<LeaveRequest> getRejectedLeaveByRequestId(@PathVariable Integer requestId) {
+        LeaveRequest leave = leaveManagementService.getRejectedLeaveByRequestId(requestId);
+        return ResponseEntity.ok(leave);
     }
 
-
+     
 }
