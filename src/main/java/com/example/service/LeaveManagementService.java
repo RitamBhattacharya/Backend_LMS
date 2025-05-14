@@ -27,6 +27,9 @@ public class LeaveManagementService implements ILeaveManagementService{
 
 	@Autowired
 	private LeaveRequestRepository leaveRequestRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	// Admin CRUD
 	
@@ -164,20 +167,38 @@ public class LeaveManagementService implements ILeaveManagementService{
 	public void approveLeaveRequest(Integer requestId, String remarks) {
 	    LeaveRequest leave = leaveRequestRepository.findById(requestId)
 	        .orElseThrow(() -> new RuntimeException("Leave not found"));
+
 	    leave.setStatus("Approved");
 	    leave.setAdminComments(remarks);
 	    leaveRequestRepository.save(leave);
+
+	    // ✅ Refetch to ensure data is updated in memory before sending email
+	    LeaveRequest updatedLeave = leaveRequestRepository.findById(requestId)
+	        .orElseThrow(() -> new RuntimeException("Leave not found after saving"));
+
+	    emailService.sendApprovalMailToEmployee(updatedLeave);
 	}
+
+
+
+
 	
 	@Override
 	public void rejectLeaveRequest(Integer requestId, String remarks) {
 	    LeaveRequest leave = leaveRequestRepository.findById(requestId)
 	        .orElseThrow(() -> new RuntimeException("Leave not found"));
+
 	    leave.setStatus("Rejected");
 	    leave.setAdminComments(remarks);
 	    leaveRequestRepository.save(leave);
+
+	    LeaveRequest updatedLeave = leaveRequestRepository.findById(requestId)
+	        .orElseThrow(() -> new RuntimeException("Leave not found after saving"));
+
+	    emailService.sendRejectionMailToEmployee(updatedLeave);
 	}
-	
+
+
 	
 	
 	@Override
@@ -247,6 +268,33 @@ public class LeaveManagementService implements ILeaveManagementService{
 
 	    return result;
 	}
+	
+	@Override
+	public LeaveRequest submitLeaveRequest(LeaveRequest request) {
+	    Integer employeeId = request.getEmployee().getEmployeeID();
+	    Employee employee = employeeRepository.findById(employeeId)
+	            .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+	    request.setEmployee(employee);
+	    LeaveRequest savedRequest = leaveRequestRepository.save(request);
+
+	    List<Admin> admins = adminRepository.findAll();
+	    List<String> adminEmails = admins.stream()
+	            .map(Admin::getEmail)
+	            .distinct()
+	            .toList();
+
+	    String subject = "New Leave Request Submitted";
+	    String frontendUrl = "http://localhost:3000/pending"; // update as needed
+	    String body = "<p>A new leave request from <strong>" + employee.getName() + "</strong> needs your attention.</p>"
+	            + "<p><a href='http://localhost:3000/pending' style='text-decoration:none; color:#1a73e8;'>Click here to view</a></p>";
+
+
+	    emailService.sendMailToMultipleAdmins(adminEmails, subject, body);
+
+	    return savedRequest;
+	}
+
 
 
 	

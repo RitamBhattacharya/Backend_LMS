@@ -3,6 +3,7 @@ package com.example.service;
 import java.util.List;
 import java.util.Map;
 
+
 import com.example.entity.Admin;
 import com.example.entity.Employee;
 import com.example.entity.LeaveRequest;
@@ -36,7 +37,6 @@ public interface ILeaveManagementService {
     Map<String, Long> getDashboardStats();
     
 
-    
     void rejectLeaveRequest(Integer requestId, String remarks);
     void approveLeaveRequest(Integer requestId, String remarks);
     
@@ -46,5 +46,7 @@ public interface ILeaveManagementService {
     
 
     Map<String, Map<String, Integer>> getLeaveSummaryForEmployee(Integer employeeId);
+    
+    public LeaveRequest submitLeaveRequest(LeaveRequest request);
 
 }

@@ -13,6 +13,10 @@ import com.example.entity.Employee;
 import com.example.entity.LeaveRequest;
 import com.example.service.LeaveManagementService;
 
+import jakarta.annotation.PostConstruct;
+
+import com.example.service.EmailService;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin("*")
@@ -20,6 +24,8 @@ public class LeaveManagementController {
 
     @Autowired
     private LeaveManagementService leaveManagementService;
+    @Autowired
+    private EmailService emailService;
 
     // Admin Endpoints
 
@@ -201,5 +207,40 @@ public class LeaveManagementController {
         Map<String, Map<String, Integer>> summary = leaveManagementService.getLeaveSummaryForEmployee(id);
         return ResponseEntity.ok(summary);
     }
+    
+    
+
+    @PostMapping("/leave")
+    public ResponseEntity<LeaveRequest> submitLeaveRequest(@RequestBody LeaveRequest request) {
+        // Save the leave request and ensure Employee is fetched/attached properly
+        LeaveRequest createdRequest = leaveManagementService.submitLeaveRequest(request);
+
+        // Get employee name from the saved request
+        String employeeName = createdRequest.getEmployee().getName();
+
+        // Create the email body
+        String body = "A new leave request from " + employeeName + " needs your attention.";
+        String subject = "New Leave Request Submitted";
+
+        // Fetch all admin emails
+        List<Admin> admins = leaveManagementService.getAllAdmins();
+        List<String> adminEmails = admins.stream()
+                .map(Admin::getEmail)
+                .toList();
+
+        // Send email to all admins
+        emailService.sendMailToMultipleAdmins(adminEmails, subject, body);
+
+        return ResponseEntity.ok(createdRequest);
+    }
+    
+    @GetMapping("/test-email")
+    public String testEmail() {
+        emailService.sendMail("dansampurna@gmail.com", "Test Subject", "This is a test email.");
+        return "Email Sent";
+    }
+
+
+
 
 }
